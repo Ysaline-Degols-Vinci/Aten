@@ -16,6 +16,8 @@ public class DialogueManager : MonoBehaviour
     private string speaker;
     private string portrait;
 
+    public GameObject Inventory;
+
     private Dictionary<string, object> inkVariables = new Dictionary<string, object>()
 {
     { "coins", 0 },
@@ -75,6 +77,7 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
+            Inventory.SetActive(false);
             SyncAllVariablesToInk();
             GameEventsManager.Instance.DialogueEvent.DialogueStarted();
             dialoguePlaying = true;
@@ -151,6 +154,7 @@ public class DialogueManager : MonoBehaviour
     private void exitDialogue()
     {
         dialoguePlaying = false;
+        Inventory.SetActive(true);
         GameEventsManager.Instance.InputEventContext = InputEventContext.DEFAULT;
         GameEventsManager.Instance.DialogueEvent.DialogueFinished();
         story.ResetState();
