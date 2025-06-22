@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a38b6dd25cadaff4e91484c85353af33, type: 3}
-  m_Name: Axe
+  m_Name: Pickaxe
   m_EditorClassIdentifier: 
   Tile: {fileID: 0}
-  Image: {fileID: 21300000, guid: 1a5560aa1128de743a04891343e1da90, type: 3}
+  Image: {fileID: 21300000, guid: 0945c5aa1c6b8af4c8da97bc31f627dc, type: 3}
   Name: Axe
   Type: 0
   IsStackable: 0
