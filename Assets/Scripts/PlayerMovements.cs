@@ -36,7 +36,9 @@ public class PlayerMovements : MonoBehaviour
 
     void Update()
     {
-        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE) return;
+        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.INVENTORY) {
+            animator.SetBool("isWalking", false);
+            return; }
             // Entrée uniquement dans Update
         float inputX = Input.GetAxisRaw("Horizontal");
         float inputY = Input.GetAxisRaw("Vertical");
@@ -63,6 +65,7 @@ public class PlayerMovements : MonoBehaviour
         {
             imageTransform.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);
         }
+
 
         bool isMoving = inputDirection.magnitude > 0;
         animator.SetBool("isWalking", isMoving);

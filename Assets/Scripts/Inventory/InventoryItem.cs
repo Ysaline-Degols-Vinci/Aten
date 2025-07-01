@@ -38,6 +38,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         parentAfterDrag = transform.parent; 
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
+        Debug.Log("OnBeginDrag: " + item.name + " - Count: " + itemCount);
     }
 
     public void OnDrag(PointerEventData eventData)

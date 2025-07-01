@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -8,7 +9,13 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance;
 
     public InventorySlot[] inventorySlots;
+    public InventorySlot[] activeInventorySlots;
     public GameObject InventoryItemPrefab;
+
+    public GameObject InternInventory;
+    public GameObject ShowInventory;
+    public GameObject HideInventory;
+    public Button SelectedOption;
 
     public int maxStackItems = 4;
 
@@ -25,9 +32,9 @@ public class InventoryManager : MonoBehaviour
     }
     public void changeSelectedSlot(int slotIndex)
     {
-        if(selectedSlot >= 0) inventorySlots[selectedSlot].deselect();
+        if(selectedSlot >= 0) activeInventorySlots[selectedSlot].deselect();
         selectedSlot = slotIndex;
-        inventorySlots[selectedSlot].select();
+        activeInventorySlots[selectedSlot].select();
     }
 
     private void Update()
@@ -40,7 +47,11 @@ public class InventoryManager : MonoBehaviour
                   changeSelectedSlot(number - 1);
               }
           }*/
-        if (Input.inputString != null)
+
+        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE) return;
+        
+
+            if (Input.inputString != null)
         {
             for (int i = 0; i < inventorySlots.Length; i++)
             {
@@ -57,14 +68,36 @@ public class InventoryManager : MonoBehaviour
         {
             if (scroll > 0f)
             {
-                newSlot = (selectedSlot + 1) % inventorySlots.Length;
+                newSlot = (selectedSlot + 1) % activeInventorySlots.Length;
             }
             else if (scroll < 0f)
             {
-                newSlot = (selectedSlot - 1 + inventorySlots.Length) % inventorySlots.Length;
+                newSlot = (selectedSlot - 1 + activeInventorySlots.Length) % activeInventorySlots.Length;
             }
 
             changeSelectedSlot(newSlot);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            //Toggle la visibilité de l'inventaire
+            if (InternInventory.activeSelf) {
+                //on cache l'inventaire
+                InternInventory.SetActive(false);
+                ShowInventory.SetActive(true);
+                HideInventory.SetActive(false);
+                GameEventsManager.Instance.InputEventContext = InputEventContext.DEFAULT;
+
+            }
+            else
+            {
+                //on affiche l'inventaire
+                InternInventory.SetActive(true);
+                ShowInventory.SetActive(false);
+                HideInventory.SetActive(true);
+                SelectedOption.Select();
+                GameEventsManager.Instance.InputEventContext = InputEventContext.INVENTORY;
+            }
         }
     }
 
@@ -109,7 +142,7 @@ public class InventoryManager : MonoBehaviour
 
     public Item getSelectedItem(bool use)
     {
-        InventorySlot slot = inventorySlots[selectedSlot];
+        InventorySlot slot = activeInventorySlots[selectedSlot];
         InventoryItem inventoryItem = slot.GetComponentInChildren<InventoryItem>();
         if (inventoryItem != null)
         {

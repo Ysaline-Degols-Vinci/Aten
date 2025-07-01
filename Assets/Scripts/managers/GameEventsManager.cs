@@ -8,6 +8,15 @@ public class GameEventsManager : MonoBehaviour
     public DialogueEvent DialogueEvent;
     public InputEventContext InputEventContext = InputEventContext.DEFAULT;
 
+    public void setToInventory()
+    {
+        InputEventContext = InputEventContext.INVENTORY;
+    }
+
+    public void setToDefault()
+    {
+        InputEventContext = InputEventContext.DEFAULT;
+    }
 
     private void Awake()
     {
