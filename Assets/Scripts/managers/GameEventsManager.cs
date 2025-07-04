@@ -7,6 +7,7 @@ public class GameEventsManager : MonoBehaviour
     public static GameEventsManager Instance { get; private set; }
     public DialogueEvent DialogueEvent;
     public InputEventContext InputEventContext = InputEventContext.DEFAULT;
+    public event System.Action<int> onMoneyChanged;
 
     public void setToInventory()
     {
@@ -28,7 +29,11 @@ public class GameEventsManager : MonoBehaviour
         Instance = this;
 
         DialogueEvent = new DialogueEvent();
-        Debug.Log("input :" + InputEventContext);
+    }
+
+    public void MoneyChanged(int newAmount)
+    {
+        onMoneyChanged?.Invoke(newAmount); 
     }
 }
 

@@ -8,7 +8,6 @@ public class DialogueManager : MonoBehaviour
     private bool dialoguePlaying = false;
     [SerializeField] private TextAsset inkJSON;
     private Story story;
-    public MoneyManager moneyManager;
 
     private const string SPEAKER_TAG = "speaker";
     private const string PORTRAIT_TAG = "portrait";
@@ -31,8 +30,8 @@ public class DialogueManager : MonoBehaviour
         story = new Story(inkJSON.text);
 
         story.BindExternalFunction("gainCoin", (int amount) => {
-            moneyManager.ChangeMoney(amount);
-            UpdateVariable("coins", moneyManager.GetMoney());
+            MoneyManager.instance.ChangeMoney(amount);
+            UpdateVariable("coins", MoneyManager.instance.GetMoney());
         });
 
         story.BindExternalFunction("setTrashCoin", (bool value) => {
@@ -61,6 +60,7 @@ public class DialogueManager : MonoBehaviour
     {
         GameEventsManager.Instance.DialogueEvent.onEnterDialogue += EnterDialogue;
         GameEventsManager.Instance.DialogueEvent.onUpdateChoiceIndex += updateChoiceIndex;
+        GameEventsManager.Instance.onMoneyChanged += OnMoneyChanged;
 
     }
 
@@ -68,6 +68,7 @@ public class DialogueManager : MonoBehaviour
     {
         GameEventsManager.Instance.DialogueEvent.onEnterDialogue -= EnterDialogue;
         GameEventsManager.Instance.DialogueEvent.onUpdateChoiceIndex -= updateChoiceIndex;
+        GameEventsManager.Instance.onMoneyChanged -= OnMoneyChanged;
 
     }
     private void EnterDialogue(string knotName)
@@ -218,4 +219,11 @@ public class DialogueManager : MonoBehaviour
             UpdateVariableInInk(kvp.Key, kvp.Value);
         }
     }
+
+    private void OnMoneyChanged(int newAmount)
+    {
+        UpdateVariable("coins", newAmount);
+    }
+
+
 }

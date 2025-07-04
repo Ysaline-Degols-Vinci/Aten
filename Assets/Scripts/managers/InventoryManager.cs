@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class InventoryManager : MonoBehaviour
 {
 
-    public static InventoryManager Instance;
+    public static InventoryManager Instance { get; private set; }
 
     public InventorySlot[] inventorySlots;
     public InventorySlot[] activeInventorySlots;
@@ -16,6 +16,11 @@ public class InventoryManager : MonoBehaviour
     public GameObject ShowInventory;
     public GameObject HideInventory;
     public Button SelectedOption;
+
+    public delegate void OnItemChanged();
+    public event OnItemChanged onItemChanged;
+
+
 
     public int maxStackItems = 4;
 
@@ -116,6 +121,7 @@ public class InventoryManager : MonoBehaviour
             {
                 inventoryItem.itemCount++;
                 inventoryItem.refreshCount();
+                onItemChanged?.Invoke();
                 return true;
             }
         }
@@ -128,13 +134,56 @@ public class InventoryManager : MonoBehaviour
             if(inventoryItem == null)
             {
                 SpawnNewItem(item, slot);
+                onItemChanged?.Invoke();
                 return true;
             }
         }
         return false;
-    } 
+    }
 
-    public void SpawnNewItem(Item item, InventorySlot slot) { 
+    public int ItemPresence(string item, int quantity)
+    {
+        int quantityPresent = 0;
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+
+            InventorySlot slot = inventorySlots[i];
+            InventoryItem inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+            if (inventoryItem != null && inventoryItem.item.Name == item)
+            {
+                quantityPresent += inventoryItem.itemCount;
+            }
+        }
+        return quantityPresent; 
+    }
+
+    public void removeItem(Item item, int quantity) {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            InventorySlot slot = inventorySlots[i];
+            InventoryItem inventoryItem = slot.GetComponentInChildren<InventoryItem>();
+
+            if (inventoryItem != null && inventoryItem.item == item)
+            {
+                if (inventoryItem.itemCount < quantity) return;
+                
+                inventoryItem.itemCount -= quantity;
+
+                if (inventoryItem.itemCount <= 0)
+                {
+                    Destroy(inventoryItem.gameObject);
+                }
+                else
+                {
+                    inventoryItem.refreshCount();
+                }
+                onItemChanged?.Invoke();
+                return;
+            }
+        }
+    }
+
+            public void SpawnNewItem(Item item, InventorySlot slot) { 
         GameObject newItem = Instantiate(InventoryItemPrefab, slot.transform);
         InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
         inventoryItem.initializeItem(item);

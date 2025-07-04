@@ -87,7 +87,6 @@ public class DialoguePanelUI : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("DialoguePanelUI enabled");
         // Subscribe to the dialogue events
         // This is where we will receive the events from the DialogueEvent class
         GameEventsManager.Instance.DialogueEvent.onDialogueStarted += DialogueStarted;
