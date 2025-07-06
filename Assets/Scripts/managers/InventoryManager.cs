@@ -223,6 +223,11 @@ public class InventoryManager : MonoBehaviour
     public void AddItemByName(string itemName)
     {
         Debug.Log("Adding item by name: " + itemName);
+        if (itemDatabase == null)
+        {
+            Debug.LogError("ItemDatabase is not assigned in InventoryManager. Please assign it in the inspector.");
+
+        }
         Item item = itemDatabase.GetItemByName(itemName);
         if (item != null)
         {

@@ -19,62 +19,26 @@ public class DialogueManager : MonoBehaviour
     private string speaker;
     private string portrait;
 
+    private InkExternalFunctions inkExternalFunctions;
+    public InkDialogVariables inkDialogueVariables;
+
     public GameObject Inventory;
-
-    private Dictionary<string, object> inkVariables = new Dictionary<string, object>()
-{
-    { "coins", 0 },
-    { "TrashCoin", false },
-    {"TossedCoinWell", false }
-};
-
-
 
     private void Awake() {
         
 
         story = new Story(inkJSON.text);
-        Bind(story);
+        inkExternalFunctions = new InkExternalFunctions();
+        inkExternalFunctions.Bind(story);
+        inkDialogueVariables = new InkDialogVariables(story);
     }
 
     private void OnDestroy()
     {
-        Unbind(story);
+        inkExternalFunctions.Unbind(story);
     }
 
-    private void Bind(Story story) {
-        story.BindExternalFunction("gainCoin", (int amount) => {
-            MoneyManager.instance.ChangeMoney(amount);
-            UpdateVariable("coins", MoneyManager.instance.GetMoney());
-        });
 
-        story.BindExternalFunction("setTrashCoin", (bool value) => {
-            UpdateVariable("TrashCoin", value);
-        });
-
-        story.BindExternalFunction("setTossedCoinWell", (bool value) => {
-            UpdateVariable("TossedCoinWell", value);
-        });
-
-        story.BindExternalFunction("StartQuest", (string questID) => StartQuest(questID));
-        story.BindExternalFunction("AdvanceQuest", (string questID) => AdvanceQuest(questID));
-        story.BindExternalFunction("FinishQuest", (string questID) => FinishQuest(questID));
-        story.BindExternalFunction("AddItemInventory", (string item) => AddToInventory(item));
-
-
-        SyncVariablesToInk();
-    }
-
-    private void Unbind(Story story)
-    {
-        story.UnbindExternalFunction("gainCoin");
-        story.UnbindExternalFunction("setTrashCoin");
-        story.UnbindExternalFunction("setTossedCoinWell");
-        story.UnbindExternalFunction("StartQuest");
-        story.UnbindExternalFunction("AdvanceQuest");
-        story.UnbindExternalFunction("FinishQuest");
-        story.UnbindExternalFunction("AddItemInventory");
-    }
 
     private void Update()
     {
@@ -102,7 +66,6 @@ public class DialogueManager : MonoBehaviour
         GameEventsManager.Instance.DialogueEvent.onUpdateChoiceIndex += updateChoiceIndex;
         GameEventsManager.Instance.onMoneyChanged += OnMoneyChanged;
         GameEventsManager.Instance.DialogueEvent.onUpdateInkDialogueVariable += UpdateInkDialogueVariable;
-        Debug.Log("DialogueManager: GameEventsManager and EventManager are ready.");
         EventManager.instance.questEvents.onQuestStateChange += QuestStateChange;
         Instance = this;
 
@@ -125,7 +88,6 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Inventory.SetActive(false);
-            SyncAllVariablesToInk();
             GameEventsManager.Instance.DialogueEvent.DialogueStarted();
             dialoguePlaying = true;
             GameEventsManager.Instance.InputEventContext = InputEventContext.DIALOGUE;
@@ -135,8 +97,9 @@ public class DialogueManager : MonoBehaviour
 
             story.ChoosePathString(knotName);
         }
+        inkDialogueVariables.SyncVariablesAndStartListening(story);
 
-       // continueOrExitStory();
+        // continueOrExitStory();
     }
 
     private void continueOrExitStory()
@@ -181,7 +144,6 @@ public class DialogueManager : MonoBehaviour
             }
             string tagKey = splitTag[0].Trim();
             string tagValue = splitTag[1].Trim();
-            Debug.Log(tagValue + " is the tag value for " + tagKey);
             // handle the tag
 
             switch (tagKey)
@@ -216,106 +178,35 @@ public class DialogueManager : MonoBehaviour
     public void updateInk(int money) {
         story.variablesState["coins"] = money;
     }
-
-    private void SyncVariablesToInk()
-    {
-        foreach (var kvp in inkVariables)
-        {
-            if (kvp.Value is int intValue)
-            {
-                story.variablesState[kvp.Key] = intValue;
-            }
-            else if (kvp.Value is bool boolValue)
-            {
-                story.variablesState[kvp.Key] = boolValue;
-            }
-            // ajouter d'autres types si besoin
-        }
-    }
-
-    public void UpdateVariable(string key, object value)
-    {
-        if (inkVariables.ContainsKey(key))
-        {
-            inkVariables[key] = value;
-        }
-        else
-        {
-            inkVariables.Add(key, value);
-        }
-    }
-
-    private void UpdateVariableInInk(string key, object value)
-    {
-        if (value is int intValue)
-            story.variablesState[key] = intValue;
-        else if (value is bool boolValue)
-            story.variablesState[key] = boolValue;
-        else if (value is float floatValue)
-            story.variablesState[key] = floatValue;
-        else if (value is string strValue)
-            story.variablesState[key] = strValue;
-        else
-            Debug.LogWarning($"UpdateVariableInInk: type of {key} not supported");
-    }
-
-    public void SyncAllVariablesToInk()
-    {
-        foreach (var kvp in inkVariables)
-        {
-            UpdateVariableInInk(kvp.Key, kvp.Value);
-        }
-    }
-
-    private void OnMoneyChanged(int newAmount)
-    {
-        UpdateVariable("coins", newAmount);
-    }
-
-    private void StartQuest(string questID)
-    {
-        EventManager.instance.questEvents.StartQuest(questID);
-    }
-
-    private void AdvanceQuest(string questID)
-    {
-        EventManager.instance.questEvents.AdvanceQuest(questID);
-    }
-
-    private void FinishQuest(string questID)
-    {
-        EventManager.instance.questEvents.FinishQuest(questID);
-    }
-
-    private void AddToInventory(string item)
-    {
-        InventoryManager.Instance.AddItemByName(item);
-    }
-
     private void QuestStateChange(Quest quest)
     {
-        Debug.Log($"Quest state changed: {quest.questInfo.id} - {quest.state}");
+        Debug.Log($"[QuestStateChange] {quest.questInfo.id} => {quest.state}" + "BBBBBBBBBBBBBBBBBBBBBBBBBB");
 
         GameEventsManager.Instance.DialogueEvent.UpdateInkDialogueVariable(
             quest.questInfo.id + "State",
             new StringValue(quest.state.ToString())
         );
-        UpdateVariableInInk(quest.questInfo.id + "State", new StringValue(quest.state.ToString()));
     }
 
     private void UpdateInkDialogueVariable(string name, Ink.Runtime.Object value)
     {
-        UpdateVariableState(name, value);
+        Debug.Log($"[InkVarUpdate] {name} = {value} CCCCCCCCCCCCCCCCCCC");
+
+        inkDialogueVariables.UpdateVariableState(name, value);
     }
 
-    public void UpdateVariableState(string name, Ink.Runtime.Object value)
+
+
+    private void OnMoneyChanged(int newAmount)
     {
-        // only maintain variables that were initialized from the globals ink file
-        if (!inkVariables.ContainsKey(name))
-        {
-            return;
-        }
-        inkVariables[name] = value;
-        Debug.Log("Updated dialogue variable: " + name + " = " + value);
+        GameEventsManager.Instance.DialogueEvent.UpdateInkDialogueVariable("coins", new Ink.Runtime.IntValue(newAmount));
     }
+
+
+
+
+
+
+
+
 }

@@ -37,7 +37,6 @@ public class DialoguePanelUI : MonoBehaviour
     {
         speakerText.alignment = TextAlignmentOptions.Center;
 
-        Debug.Log($"Displaying dialogue: {text} by {speaker} with portrait {portrait}");
         dialogueText.text = text;
         speakerText.text = speaker;
 

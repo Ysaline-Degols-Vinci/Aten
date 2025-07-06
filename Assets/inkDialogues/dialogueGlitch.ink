@@ -9,7 +9,7 @@ EXTERNAL StartQuest(questID)
 EXTERNAL AdvanceQuest(questID)
 EXTERNAL FinishQuest(questID)
 VAR CollectWoodQuestID = "CollectWood"
-VAR CollectWoodQuestState = "REQUIREMENTS_NOT_MET"
+VAR CollectWoodState = "REQUIREMENTS_NOT_MET"
 EXTERNAL AddItemInventory(string itemName)
 
 
@@ -75,7 +75,7 @@ EXTERNAL AddItemInventory(string itemName)
 }
     
     === BlobCat ===
-    { CollectWoodQuestState :
+    { CollectWoodState :
         - "REQUIREMENTS_NOT_MET" : -> requirementsNotMet
         - "CAN_START" : -> canStart
         - "IN_PROGRESS" : -> inProgress
@@ -106,6 +106,7 @@ EXTERNAL AddItemInventory(string itemName)
     
     =canFinish
      \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
+     \*blub* (take these coins) #speaker:Blob#portrait:BlobCat
     ->END
     
     =finished
