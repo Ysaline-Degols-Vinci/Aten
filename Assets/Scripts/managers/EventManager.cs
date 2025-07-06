@@ -18,5 +18,6 @@ public class EventManager : MonoBehaviour
         instance = this;
 
         questEvents = new QuestEvents();
+        Debug.Log("EventManager initialized.");
     }
 }

@@ -5819,6 +5819,7 @@ GameObject:
   - component: {fileID: 919062852}
   - component: {fileID: 919062851}
   - component: {fileID: 919062850}
+  - component: {fileID: 919062853}
   m_Layer: 0
   m_Name: QuestPointTest
   m_TagString: Untagged
@@ -5833,7 +5834,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919062849}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40cc25b83fef0c643bc04ec64ee9779d, type: 3}
   m_Name: 
@@ -5878,6 +5879,20 @@ Transform:
   - {fileID: 1005605309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &919062853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919062849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1f975d0aeefb0543933230a34470281, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptAnimator: {fileID: 0}
+  dialogueKnotName: BlobCat
 --- !u!1 &921064924
 GameObject:
   m_ObjectHideFlags: 0
@@ -10290,6 +10305,7 @@ MonoBehaviour:
   ShowInventory: {fileID: 2051068935}
   HideInventory: {fileID: 1977716592}
   SelectedOption: {fileID: 921064928}
+  itemDatabase: {fileID: 0}
   maxStackItems: 4
 --- !u!114 &1931071059
 MonoBehaviour:

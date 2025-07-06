@@ -5,6 +5,12 @@ VAR TrashCoin = false
 EXTERNAL setTrashCoin(value)
 VAR TossedCoinWell = false
 EXTERNAL setTossedCoinWell(value)
+EXTERNAL StartQuest(questID)
+EXTERNAL AdvanceQuest(questID)
+EXTERNAL FinishQuest(questID)
+VAR CollectWoodQuestID = "CollectWood"
+VAR CollectWoodQuestState = "REQUIREMENTS_NOT_MET"
+EXTERNAL AddItemInventory(string itemName)
 
 
 
@@ -68,6 +74,46 @@ EXTERNAL setTossedCoinWell(value)
     -> DONE
 }
     
+    === BlobCat ===
+    { CollectWoodQuestState :
+        - "REQUIREMENTS_NOT_MET" : -> requirementsNotMet
+        - "CAN_START" : -> canStart
+        - "IN_PROGRESS" : -> inProgress
+        - "CAN_FINISH" : -> canFinish
+        - "FINISHED" : ->finished
+        - else: -> END
+    }
+    = requirementsNotMet
+    nuh uh not possible #speaker:Blob#portrait:BlobCat
+    ->END
+    
+    = canStart
+    \*blub* (I need a piece of wood!) #speaker:Blob#portrait:BlobCat
+    \*blub?* (Could you get me one?) #speaker:Blob#portrait:BlobCat
+    * [Yes]
+    \*blub* (Great! Take this axe!) #speaker:Blob#portrait:BlobCat
+    ~ StartQuest(CollectWoodQuestID)
+    ~ AddItemInventory("Axe")
+    ->DONE
+    *[No]
+    \*blub* (Aw man. I have no arms, I can't do this myself) #speaker:Blob#portrait:BlobCat
+    -> DONE
+    ->END
+    
+    = inProgress
+    \*blub* (Take the axe and hit a tree!) #speaker:Blob#portrait:BlobCat
+    ->END
+    
+    =canFinish
+     \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
+    ->END
+    
+    =finished
+    \*blub!* (Thanks for the help kid!) #speaker:Blob#portrait:BlobCat
+    Yeah, of course #speaker:Arlo#portrait:Arlo
+    ->END 
+    
+   
   
 
     

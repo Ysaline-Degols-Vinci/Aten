@@ -19,6 +19,7 @@ public class InventoryManager : MonoBehaviour
 
     public delegate void OnItemChanged();
     public event OnItemChanged onItemChanged;
+    public ItemDatabase itemDatabase;
 
 
 
@@ -218,4 +219,19 @@ public class InventoryManager : MonoBehaviour
         }
         return null;
     }
-}
+
+    public void AddItemByName(string itemName)
+    {
+        Debug.Log("Adding item by name: " + itemName);
+        Item item = itemDatabase.GetItemByName(itemName);
+        if (item != null)
+        {
+            AddItem(item);
+        }
+        else
+        {
+            Debug.LogWarning("Item not found in database: " + itemName);
+        }
+    }
+
+    }

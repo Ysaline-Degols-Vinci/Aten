@@ -13,10 +13,20 @@ public class QuestManager : MonoBehaviour
 
     private void OnEnable()
     {
+        StartCoroutine(WaitForEventManager());
+    }
+
+    private IEnumerator WaitForEventManager()
+    {
+        while (EventManager.instance == null)
+        {
+            yield return null;
+        }
         EventManager.instance.questEvents.onStartQuest += StartQuest;
         EventManager.instance.questEvents.onAdvanceQuest += AdvanceQuest;
         EventManager.instance.questEvents.onFinishQuest += FinishQuest;
     }
+
 
     private void OnDisable()
     {
@@ -53,7 +63,7 @@ public class QuestManager : MonoBehaviour
     {
         if (!questMap.ContainsKey(id))
         {
-            Debug.LogError($"Quest with ID {id} does not exist in the quest map.AAAAAAAAAAA");
+            Debug.LogError($"Quest with ID {id} does not exist in the quest map.");
             return null;
         }
 
@@ -126,11 +136,18 @@ public class QuestManager : MonoBehaviour
 
     private void Update()
     {
-       foreach(Quest quest in questMap.Values)
+        while(DialogueManager.Instance == null )
+        {
+            // Wait for DialogueManager to be initialized
+            return;
+        }
+        // Check if any quests can be started based on their requirements
+        foreach (Quest quest in questMap.Values)
         {
             if(quest.state== QuestState.REQUIREMENTS_NOT_MET && CheckRequirementsMet(quest))
             {
                 ChangeQuestState(quest.questInfo.id, QuestState.CAN_START);
+                Debug.Log($"Quest {quest.questInfo.id} is now available to start.");
             }
         }
     }

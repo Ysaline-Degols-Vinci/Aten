@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ink.Runtime;
+using Unity.VisualScripting;
 
 public class DialogueManager : MonoBehaviour
 {
+
+    public static DialogueManager Instance { get; private set; }
+
     private bool dialoguePlaying = false;
     [SerializeField] private TextAsset inkJSON;
     private Story story;
@@ -27,8 +31,18 @@ public class DialogueManager : MonoBehaviour
 
 
     private void Awake() {
-        story = new Story(inkJSON.text);
+        
 
+        story = new Story(inkJSON.text);
+        Bind(story);
+    }
+
+    private void OnDestroy()
+    {
+        Unbind(story);
+    }
+
+    private void Bind(Story story) {
         story.BindExternalFunction("gainCoin", (int amount) => {
             MoneyManager.instance.ChangeMoney(amount);
             UpdateVariable("coins", MoneyManager.instance.GetMoney());
@@ -42,8 +56,24 @@ public class DialogueManager : MonoBehaviour
             UpdateVariable("TossedCoinWell", value);
         });
 
-        SyncVariablesToInk();
+        story.BindExternalFunction("StartQuest", (string questID) => StartQuest(questID));
+        story.BindExternalFunction("AdvanceQuest", (string questID) => AdvanceQuest(questID));
+        story.BindExternalFunction("FinishQuest", (string questID) => FinishQuest(questID));
+        story.BindExternalFunction("AddItemInventory", (string item) => AddToInventory(item));
 
+
+        SyncVariablesToInk();
+    }
+
+    private void Unbind(Story story)
+    {
+        story.UnbindExternalFunction("gainCoin");
+        story.UnbindExternalFunction("setTrashCoin");
+        story.UnbindExternalFunction("setTossedCoinWell");
+        story.UnbindExternalFunction("StartQuest");
+        story.UnbindExternalFunction("AdvanceQuest");
+        story.UnbindExternalFunction("FinishQuest");
+        story.UnbindExternalFunction("AddItemInventory");
     }
 
     private void Update()
@@ -58,9 +88,23 @@ public class DialogueManager : MonoBehaviour
 
     private void OnEnable()
     {
+        StartCoroutine(WaitForGameEventsManager());
+    }
+
+    private IEnumerator WaitForGameEventsManager()
+    {
+        while (GameEventsManager.Instance == null || EventManager.instance == null)
+        {
+            yield return null; 
+        }
+
         GameEventsManager.Instance.DialogueEvent.onEnterDialogue += EnterDialogue;
         GameEventsManager.Instance.DialogueEvent.onUpdateChoiceIndex += updateChoiceIndex;
         GameEventsManager.Instance.onMoneyChanged += OnMoneyChanged;
+        GameEventsManager.Instance.DialogueEvent.onUpdateInkDialogueVariable += UpdateInkDialogueVariable;
+        Debug.Log("DialogueManager: GameEventsManager and EventManager are ready.");
+        EventManager.instance.questEvents.onQuestStateChange += QuestStateChange;
+        Instance = this;
 
     }
 
@@ -69,6 +113,8 @@ public class DialogueManager : MonoBehaviour
         GameEventsManager.Instance.DialogueEvent.onEnterDialogue -= EnterDialogue;
         GameEventsManager.Instance.DialogueEvent.onUpdateChoiceIndex -= updateChoiceIndex;
         GameEventsManager.Instance.onMoneyChanged -= OnMoneyChanged;
+        GameEventsManager.Instance.DialogueEvent.onUpdateInkDialogueVariable -= UpdateInkDialogueVariable;
+        EventManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
 
     }
     private void EnterDialogue(string knotName)
@@ -89,6 +135,7 @@ public class DialogueManager : MonoBehaviour
 
             story.ChoosePathString(knotName);
         }
+
        // continueOrExitStory();
     }
 
@@ -225,5 +272,50 @@ public class DialogueManager : MonoBehaviour
         UpdateVariable("coins", newAmount);
     }
 
+    private void StartQuest(string questID)
+    {
+        EventManager.instance.questEvents.StartQuest(questID);
+    }
 
+    private void AdvanceQuest(string questID)
+    {
+        EventManager.instance.questEvents.AdvanceQuest(questID);
+    }
+
+    private void FinishQuest(string questID)
+    {
+        EventManager.instance.questEvents.FinishQuest(questID);
+    }
+
+    private void AddToInventory(string item)
+    {
+        InventoryManager.Instance.AddItemByName(item);
+    }
+
+    private void QuestStateChange(Quest quest)
+    {
+        Debug.Log($"Quest state changed: {quest.questInfo.id} - {quest.state}");
+
+        GameEventsManager.Instance.DialogueEvent.UpdateInkDialogueVariable(
+            quest.questInfo.id + "State",
+            new StringValue(quest.state.ToString())
+        );
+        UpdateVariableInInk(quest.questInfo.id + "State", new StringValue(quest.state.ToString()));
+    }
+
+    private void UpdateInkDialogueVariable(string name, Ink.Runtime.Object value)
+    {
+        UpdateVariableState(name, value);
+    }
+
+    public void UpdateVariableState(string name, Ink.Runtime.Object value)
+    {
+        // only maintain variables that were initialized from the globals ink file
+        if (!inkVariables.ContainsKey(name))
+        {
+            return;
+        }
+        inkVariables[name] = value;
+        Debug.Log("Updated dialogue variable: " + name + " = " + value);
+    }
 }
