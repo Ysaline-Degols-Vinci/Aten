@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Quest 
+public class Quest
 {
-   public QuestInfo questInfo;
-
+    public QuestInfo questInfo;
     public QuestState state;
-    private int currentQuestStepIndex;
+    public int currentQuestStepIndex;
+    public List<QuestStep> currentSteps = new List<QuestStep>();
 
     public Quest(QuestInfo questInfo)
     {
@@ -18,7 +18,20 @@ public class Quest
 
     public void MoveToNextStep()
     {
+        if (!CurrentStepExists()) return;
+
+        QuestStep currentStep = currentSteps.Count > currentQuestStepIndex ? currentSteps[currentQuestStepIndex] : null;
+
+        if (currentStep != null && currentStep.isCompleted)
+        {
+            // remove or handle logic related to this step
+
+            // destroy the actual instantiated object, not the prefab!
+            Object.Destroy(currentStep.gameObject);
+
+            // go to next step
             currentQuestStepIndex++;
+        }
     }
 
     public bool CurrentStepExists()
@@ -28,23 +41,27 @@ public class Quest
 
     public void InstantiateCurrentStep(Transform parent)
     {
+        Debug.Log("Instantiating current step for quest: " + questInfo.id + " at index: " + currentQuestStepIndex);
         GameObject questPrefab = GetCurrentQuestStepPrefab();
         if (questPrefab != null)
         {
-           QuestStep questStep = Object.Instantiate<GameObject>(questPrefab, parent)
-                .GetComponent<QuestStep>();
-            questStep.initializeQuestStep(questInfo.id);
+            GameObject instance = Object.Instantiate<GameObject>(questPrefab, parent);
+            QuestStep questStep = instance.GetComponent<QuestStep>();
+            QuestStep newStep = questStep.initializeQuestStep(questInfo.id);
+            currentSteps.Add(newStep);
+        }
+        else
+        {
+            Debug.LogError("No current quest step prefab found for quest: " + questInfo.id + " at index: " + currentQuestStepIndex);
         }
     }
 
     private GameObject GetCurrentQuestStepPrefab()
     {
-        GameObject prefab = null;
-
         if (CurrentStepExists())
         {
-            prefab = questInfo.questStepPrefab[currentQuestStepIndex];
+            return questInfo.questStepPrefab[currentQuestStepIndex];
         }
-        return prefab;
+        return null;
     }
-    }
+}

@@ -20,3 +20,4 @@ MonoBehaviour:
   - {fileID: 4377169686004081714, guid: bc78302ba319e1146aec8711166693a4, type: 3}
   goldReward: 5
   expReward: 10
+  useItems: 1

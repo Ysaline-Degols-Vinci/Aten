@@ -44,4 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853fd5b0bc6c82249b9c1a4c7d3db666, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InventoryManager: {fileID: 0}
+  isCompleted: 0
+  conditionComplete: 0

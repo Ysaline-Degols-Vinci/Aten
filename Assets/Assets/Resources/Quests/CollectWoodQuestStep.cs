@@ -7,6 +7,7 @@ public class CollectWoodQuestStep : QuestStep
 {
     private int woodCollected = 0;
     private int woodToCollect = 1;
+   
 
     
     private void OnEnable()
@@ -22,10 +23,9 @@ public class CollectWoodQuestStep : QuestStep
     }
     private void Update()
     {
-        if (woodCollected >= woodToCollect)
-        {
-            CompleteStep();
-        }
+        woodCollected = InventoryManager.Instance.ItemPresence("Wood", woodToCollect);
+        conditionComplete = (woodCollected >= woodToCollect);
+
     }
 
     private void OnDisable()
@@ -36,10 +36,29 @@ public class CollectWoodQuestStep : QuestStep
     private void WoodCollected()
     {
         woodCollected = InventoryManager.Instance.ItemPresence("Wood", woodToCollect);
-        Debug.Log("Wood collected: " + woodCollected);
-        if (woodCollected >= woodToCollect)
+        conditionComplete = (woodCollected >= woodToCollect);
+
+    }
+
+    public override void removeElements()
+    {
+        InventoryManager.Instance.removeItem("Wood", woodToCollect);
+    }
+    public override void ValidateStep()
+    {
+        bool comp = CanBeCompleted();
+        Debug.Log("Can be completedDDDDDDDDDDDD: " + comp);
+        if (CanBeCompleted())
         {
+            removeElements();
             CompleteStep();
         }
     }
+
+    public override bool CanBeCompleted()
+    {
+        return conditionComplete;
+    }
+
+
 }
