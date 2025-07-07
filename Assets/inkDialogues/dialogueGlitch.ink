@@ -92,7 +92,6 @@ EXTERNAL AddItemInventory(string itemName)
     \*blub?* (Could you get me one?) #speaker:Blob#portrait:BlobCat
     * [Yes]
     \*blub* (Great! Take this axe!) #speaker:Blob#portrait:BlobCat
-    ~ StartQuest(CollectWoodQuestID)
     ~ AddItemInventory("Axe")
     ->DONE
     *[No]
@@ -108,6 +107,7 @@ EXTERNAL AddItemInventory(string itemName)
      \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
      \*blub* (take these coins) #speaker:Blob#portrait:BlobCat
      \*blub* (You can keep the axe! Can't use it anyway..) #speaker:Blob#portrait:BlobCat
+    ~ FinishQuest(CollectWoodQuestID)
 
     ->END
     

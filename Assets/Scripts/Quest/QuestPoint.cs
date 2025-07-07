@@ -44,8 +44,9 @@ public class QuestPoint : MonoBehaviour
             }
             else if (currentQuestState.Equals(QuestState.CAN_FINISH) && finishPoint)
             {
-                EventManager.instance.questEvents.FinishQuest(questInfo.id);
-                Debug.Log("Quest finished: " + questInfo.id);
+               // EventManager.instance.questEvents.FinishQuest(questInfo.id);
+               // Debug.Log("Quest finished: " + questInfo.id);
+               
             }
             }
 
