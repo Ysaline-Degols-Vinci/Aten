@@ -49,7 +49,6 @@ public class DialogueEvent
         if (onUpdateInkDialogueVariable != null)
         {
             onUpdateInkDialogueVariable(name, value);
-            Debug.Log("DialogueEvent: Updated Ink variable " + name + " with value: " + value + "AAAAAAAAAAAAAAAAAAAAAAAA");
         }
     }
 }

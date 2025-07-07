@@ -21,4 +21,9 @@ public abstract class QuestStep : MonoBehaviour
         }
     }
 
+    public virtual void RemoveRessources()
+    {
+
+    }
+
 }

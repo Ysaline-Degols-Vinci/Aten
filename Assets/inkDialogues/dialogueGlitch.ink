@@ -107,6 +107,8 @@ EXTERNAL AddItemInventory(string itemName)
     =canFinish
      \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
      \*blub* (take these coins) #speaker:Blob#portrait:BlobCat
+     \*blub* (You can keep the axe! Can't use it anyway..) #speaker:Blob#portrait:BlobCat
+
     ->END
     
     =finished

@@ -184,7 +184,21 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-            public void SpawnNewItem(Item item, InventorySlot slot) { 
+    public void removeItem(string itemName, int quantity)
+    {
+        Item item = itemDatabase.GetItemByName(itemName);
+        if (item != null)
+        {
+            removeItem(item, quantity);
+        }
+        else
+        {
+            Debug.LogWarning("Item not found in database: " + itemName);
+        }
+    }
+
+
+    public void SpawnNewItem(Item item, InventorySlot slot) { 
         GameObject newItem = Instantiate(InventoryItemPrefab, slot.transform);
         InventoryItem inventoryItem = newItem.GetComponent<InventoryItem>();
         inventoryItem.initializeItem(item);
@@ -222,7 +236,6 @@ public class InventoryManager : MonoBehaviour
 
     public void AddItemByName(string itemName)
     {
-        Debug.Log("Adding item by name: " + itemName);
         if (itemDatabase == null)
         {
             Debug.LogError("ItemDatabase is not assigned in InventoryManager. Please assign it in the inspector.");

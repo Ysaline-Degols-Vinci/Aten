@@ -37,7 +37,6 @@ public class QuestPoint : MonoBehaviour
         if (!PlayerIsNear) return;
         //Cliquer e pour commencer la quete
         if (Input.GetKeyDown(KeyCode.E)){
-            Debug.Log("Player is near quest point: " + questInfo.id);
             if (currentQuestState.Equals(QuestState.CAN_START) && startPoint)
             {
                 EventManager.instance.questEvents.StartQuest(questInfo.id);

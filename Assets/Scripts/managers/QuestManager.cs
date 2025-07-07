@@ -95,6 +95,7 @@ public class QuestManager : MonoBehaviour
         }
         else
         {
+            Debug.Log($"Quest {id} has no more steps. Marking as can finishZZZZZZZZZZZZZ.");
             ChangeQuestState(id, QuestState.CAN_FINISH);
         }
     }

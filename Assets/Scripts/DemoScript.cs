@@ -14,7 +14,6 @@ public void pickUpItem(int id)
 
         if(result)
         {
-            Debug.Log("Item added to inventory: " + itemsToPickUp[id].name);
         }
         else
         {

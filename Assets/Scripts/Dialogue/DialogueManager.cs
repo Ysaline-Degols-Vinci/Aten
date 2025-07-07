@@ -180,8 +180,6 @@ public class DialogueManager : MonoBehaviour
     }
     private void QuestStateChange(Quest quest)
     {
-        Debug.Log($"[QuestStateChange] {quest.questInfo.id} => {quest.state}" + "BBBBBBBBBBBBBBBBBBBBBBBBBB");
-
         GameEventsManager.Instance.DialogueEvent.UpdateInkDialogueVariable(
             quest.questInfo.id + "State",
             new StringValue(quest.state.ToString())
@@ -190,8 +188,6 @@ public class DialogueManager : MonoBehaviour
 
     private void UpdateInkDialogueVariable(string name, Ink.Runtime.Object value)
     {
-        Debug.Log($"[InkVarUpdate] {name} = {value} CCCCCCCCCCCCCCCCCCC");
-
         inkDialogueVariables.UpdateVariableState(name, value);
     }
 
