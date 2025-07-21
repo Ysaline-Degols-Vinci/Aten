@@ -18,5 +18,7 @@ MonoBehaviour:
   questRequirements: []
   questStepPrefab:
   - {fileID: 4377169686004081714, guid: bc78302ba319e1146aec8711166693a4, type: 3}
+  - {fileID: 6975615748976067854, guid: 5d8351c266a083547b7aa0086e02b4b0, type: 3}
   goldReward: 5
   expReward: 10
+  description: Get a pice of wood for the Blob Cat!

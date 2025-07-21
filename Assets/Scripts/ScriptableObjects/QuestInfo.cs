@@ -12,6 +12,7 @@ public class QuestInfo : ScriptableObject
     public GameObject[] questStepPrefab;
     public int goldReward;
     public int expReward;
+    public string description;
 
     private void OnValidate()
     {

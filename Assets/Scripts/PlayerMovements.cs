@@ -38,6 +38,7 @@ public class PlayerMovements : MonoBehaviour
     {
         if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.INVENTORY) {
             animator.SetBool("isWalking", false);
+            inputDirection = Vector3.zero;
             return; }
             // Entrée uniquement dans Update
         float inputX = Input.GetAxisRaw("Horizontal");

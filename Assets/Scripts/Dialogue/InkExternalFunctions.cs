@@ -23,6 +23,13 @@ public class InkExternalFunctions
             UpdateVariable("TossedCoinWell", value);
         });
         story.BindExternalFunction("AddItemInventory", (string item) => AddToInventory(item));
+        story.BindExternalFunction("IsItemQuantityPresent", (string itemName) =>
+        {
+            return IsItemQuantityPresent(itemName);
+        });
+        story.BindExternalFunction("RemoveFromInventory", (string itemName, int quantity) => RemoveFromInventory(itemName, quantity));
+
+
 
     }
 
@@ -35,6 +42,8 @@ public class InkExternalFunctions
         story.UnbindExternalFunction("AdvanceQuest");
         story.UnbindExternalFunction("FinishQuest");
         story.UnbindExternalFunction("AddItemInventory");
+        story.UnbindExternalFunction("IsItemQuantityPresent");
+        story.UnbindExternalFunction("RemoveFromInventory");
     }
 
     private void StartQuest(string questId)
@@ -57,6 +66,11 @@ public class InkExternalFunctions
         InventoryManager.Instance.AddItemByName(item);
     }
 
+    private int IsItemQuantityPresent(string itemName)
+    {
+        return InventoryManager.Instance.ItemPresence(itemName);
+    }
+
     private void UpdateVariable(string variableName, object value)
     {
         Ink.Runtime.Object inkValue = null;
@@ -75,5 +89,10 @@ public class InkExternalFunctions
             return;
         }
         DialogueManager.Instance.inkDialogueVariables.UpdateVariableState(variableName, inkValue);
+    }
+
+    public void RemoveFromInventory(string itemName, int quantity)
+    {
+        InventoryManager.Instance.removeItem(itemName, quantity);
     }
 }

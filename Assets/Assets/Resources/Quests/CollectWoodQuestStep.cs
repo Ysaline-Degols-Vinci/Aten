@@ -26,7 +26,7 @@ public class CollectWoodQuestStep : QuestStep
 
     public void CheckProgress()
     {
-        int woodCollected = InventoryManager.Instance.ItemPresence("Wood", woodToCollect);
+        int woodCollected = InventoryManager.Instance.ItemPresence("Wood");
         if (woodCollected >= woodToCollect)
         {
             CompleteStep();

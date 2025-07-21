@@ -16,6 +16,8 @@ public class InventoryManager : MonoBehaviour
     public GameObject ShowInventory;
     public GameObject HideInventory;
     public Button SelectedOption;
+    public GameObject QuestLog;
+    public GameObject ToolBar;
 
     public delegate void OnItemChanged();
     public event OnItemChanged onItemChanged;
@@ -61,7 +63,7 @@ public class InventoryManager : MonoBehaviour
         {
             for (int i = 0; i < inventorySlots.Length; i++)
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i))
+                if ((Input.GetKeyDown(KeyCode.Alpha1 + i) || Input.GetKeyDown(KeyCode.Keypad1 + i)))
                 {
                     changeSelectedSlot(i);
                 }
@@ -70,7 +72,7 @@ public class InventoryManager : MonoBehaviour
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         int newSlot = -1;
-        if (scroll != 0f)
+        if (scroll != 0f && GameEventsManager.Instance.InputEventContext != InputEventContext.INVENTORY)
         {
             if (scroll > 0f)
             {
@@ -99,6 +101,8 @@ public class InventoryManager : MonoBehaviour
             {
                 //on affiche l'inventaire
                 InternInventory.SetActive(true);
+                QuestLog.SetActive(false);
+                ToolBar.SetActive(true);
                 ShowInventory.SetActive(false);
                 HideInventory.SetActive(true);
                 SelectedOption.Select();
@@ -142,7 +146,7 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public int ItemPresence(string item, int quantity)
+    public int ItemPresence(string item)
     {
         int quantityPresent = 0;
         for (int i = 0; i < inventorySlots.Length; i++)

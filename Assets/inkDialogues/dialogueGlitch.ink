@@ -11,6 +11,8 @@ EXTERNAL FinishQuest(questID)
 VAR CollectWoodQuestID = "CollectWood"
 VAR CollectWoodState = "REQUIREMENTS_NOT_MET"
 EXTERNAL AddItemInventory(string itemName)
+EXTERNAL IsItemQuantityPresent(string itemName)
+EXTERNAL RemoveFromInventory(string itemName, int quantity)
 
 
 
@@ -93,6 +95,7 @@ EXTERNAL AddItemInventory(string itemName)
     * [Yes]
     \*blub* (Great! Take this axe!) #speaker:Blob#portrait:BlobCat
     ~ AddItemInventory("Axe")
+    ~ StartQuest(CollectWoodQuestID)
     ->DONE
     *[No]
     \*blub* (Aw man. I have no arms, I can't do this myself) #speaker:Blob#portrait:BlobCat
@@ -100,15 +103,21 @@ EXTERNAL AddItemInventory(string itemName)
     ->END
     
     = inProgress
+    { IsItemQuantityPresent("Wood") >= 1:
+    \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
+    \*blub* (take these coins) #speaker:Blob#portrait:BlobCat
+    \*blub* (You can keep the axe! Can't use it anyway..) #speaker:Blob#portrait:BlobCat
+    ~ AdvanceQuest(CollectWoodQuestID)
+    ~ FinishQuest(CollectWoodQuestID)
+    ~ RemoveFromInventory("Wood", 1)
+    -> END
+    - else:
     \*blub* (Take the axe and hit a tree!) #speaker:Blob#portrait:BlobCat
-    ->END
+    -> END
+    }
     
     =canFinish
-     \*blub!* (Yess perfect!) #speaker:Blob#portrait:BlobCat
-     \*blub* (take these coins) #speaker:Blob#portrait:BlobCat
-     \*blub* (You can keep the axe! Can't use it anyway..) #speaker:Blob#portrait:BlobCat
-    ~ FinishQuest(CollectWoodQuestID)
-
+    Not supposed to happen anymore! #speaker:Arlo#portrait:Arlo
     ->END
     
     =finished

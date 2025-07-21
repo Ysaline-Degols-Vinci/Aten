@@ -8,6 +8,7 @@ public class Quest
 
     public QuestState state;
     private int currentQuestStepIndex;
+    private GameObject currentStepInstance;
 
     public Quest(QuestInfo questInfo)
     {
@@ -18,7 +19,13 @@ public class Quest
 
     public void MoveToNextStep()
     {
-            currentQuestStepIndex++;
+        if (currentStepInstance != null)
+        {
+            Object.Destroy(currentStepInstance);
+            currentStepInstance = null;
+        }
+
+        currentQuestStepIndex++;
     }
 
     public bool CurrentStepExists()
@@ -31,8 +38,8 @@ public class Quest
         GameObject questPrefab = GetCurrentQuestStepPrefab();
         if (questPrefab != null)
         {
-           QuestStep questStep = Object.Instantiate<GameObject>(questPrefab, parent)
-                .GetComponent<QuestStep>();
+            currentStepInstance = Object.Instantiate<GameObject>(questPrefab, parent);
+            QuestStep questStep = currentStepInstance.GetComponent<QuestStep>();
             questStep.initializeQuestStep(questInfo.id);
         }
     }
