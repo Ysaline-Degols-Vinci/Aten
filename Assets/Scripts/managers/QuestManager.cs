@@ -111,6 +111,7 @@ public class QuestManager : MonoBehaviour
     private void ClaimRewards(Quest quest)
     {
       MoneyManager.instance.ChangeMoney(quest.questInfo.goldReward);
+      XPManager.Instance.AddExperience(quest.questInfo.expReward);
         //TODO gérer autres types de récompenses
         //Objets? xp?
     }

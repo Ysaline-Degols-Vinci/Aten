@@ -24,23 +24,23 @@ public class QuestLogUI : MonoBehaviour
 
         if(quest.state == QuestState.REQUIREMENTS_NOT_MET)
         {
-            questStatusText.text = "Quest Status: Requirements Not Met";
+            questStatusText.text = "Requirements Not Met";
         }
         else if (quest.state == QuestState.IN_PROGRESS)
         {
-            questStatusText.text = "Quest Status: In Progress";
+            questStatusText.text = "In Progress";
         }
         else if (quest.state == QuestState.CAN_START)
         {
-            questStatusText.text = "Quest Status: Can start";
+            questStatusText.text = "Can start";
         }
         else if (quest.state == QuestState.FINISHED)
         {
-            questStatusText.text = "Quest Status: Finished";
+            questStatusText.text = "Finished";
         }
         else
         {
-            questStatusText.text = "Quest Status: Unknown";
+            questStatusText.text = "Unknown";
         }
 
 

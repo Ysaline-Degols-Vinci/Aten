@@ -125,6 +125,9 @@ EXTERNAL RemoveFromInventory(string itemName, int quantity)
     Yeah, of course #speaker:Arlo#portrait:Arlo
     ->END 
     
+    === MadleenShop ===
+    Greeting, Traveler! #speaker:Madleen
+    -> DONE
    
   
 
