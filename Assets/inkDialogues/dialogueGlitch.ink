@@ -126,9 +126,27 @@ EXTERNAL RemoveFromInventory(string itemName, int quantity)
     ->END 
     
     === MadleenShop ===
-    Greeting, Traveler! #speaker:Madleen
+    Greetings, Traveler! #speaker:Madleen#portrait:MadleenShop
+    -> MadleenDiscussions
+    
+    ===MadleenDiscussions===
+   I sell a lot of things if you're interested! #speaker:Madleen#portrait:MadleenShop
+     + [How is your shop doing?]
+        Pretty good. Well, uh. Lilith does buy almost all my stuff.. #speaker:Madleen#portrait:MadleenShop
+        Not a lot of people are interested in manual work. #speaker:Madleen#portrait:MadleenShop
+    -> MadleenDiscussions
+    
+    + [What do you sell?]
+        Lot of things! Wood, some tools.. #speaker:Madleen#portrait:MadleenShop
+        Well, actually, not so many things. #speaker:Madleen#portrait:MadleenShop
+        But hey, it's useful! #speaker:Madleen#portrait:MadleenShop
+        And i can buy your stuff too! #speaker:Madleen#portrait:MadleenShop
+    -> MadleenDiscussions
+    
+    + [Leave]
+        Come back soon! I'm always open. #speaker:Madleen#portrait:MadleenShop
     -> DONE
-   
+    
   
 
     

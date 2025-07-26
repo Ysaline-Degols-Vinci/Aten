@@ -7,34 +7,121 @@ using UnityEngine.UIElements;
 
 public class DialoguePanelUI : MonoBehaviour
 {
-    [SerializeField] private GameObject contentParent;
+    [SerializeField] private GameObject contentParentDialogue;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private TextMeshProUGUI speakerText;
-    [SerializeField] private UnityEngine.UI.Image portraitImage;
-    [SerializeField] private DialogueChoiceButton[] choiceButtons;
+    [SerializeField] private UnityEngine.UI.Image portraitImageDialogue;
+    [SerializeField] private DialogueChoiceButton[] choiceButtonsDialogues;
 
+    [SerializeField] private GameObject contentParentShop;
+    [SerializeField] private TextMeshProUGUI shopDialogueText;
+    [SerializeField] private TextMeshProUGUI shopSpeakerText;
+    [SerializeField] private UnityEngine.UI.Image shopPortraitImageDialogue;
+    [SerializeField] private DialogueChoiceButton[] choiceButtonsShop;
 
+    [SerializeField] private DialogueChoiceButton choiceButtonPrefab; 
+    [SerializeField] private Transform choiceButtonContainerShop;
+    private List<DialogueChoiceButton> currentShopButtons = new List<DialogueChoiceButton>();
 
     private void Awake()
     {
-        contentParent.SetActive(false);
+        contentParentDialogue.SetActive(false);
+        contentParentShop.SetActive(false);
 
         ResetPanel();
     }
 
     private void DialogueStarted()
     {
-        contentParent.SetActive(true);
+        if(GameEventsManager.Instance.InputEventContext == InputEventContext.SHOPDIALOGUE)
+        {
+            contentParentShop.SetActive(true);
+            contentParentDialogue.SetActive(false);
+        }
+        else if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE)
+        {
+            contentParentShop.SetActive(false);
+            contentParentDialogue.SetActive(true);
+        }
     }
 
     private void DialogueFinished()
     {
-        contentParent.SetActive(false);
-        ResetPanel();   
+        contentParentDialogue.SetActive(false);
+        contentParentShop.SetActive(false);
+        ResetPanel();
+
+        foreach (var btn in currentShopButtons)
+        {
+            Destroy(btn.gameObject);
+        }
+        currentShopButtons.Clear();
     }
 
     private void DisplayDialogue(string text, string speaker, string portrait, List<Choice> dialogueChoices)
     {
+        if(GameEventsManager.Instance.InputEventContext == InputEventContext.SHOPDIALOGUE)
+        {
+            DisplayShopDialogue(text, speaker, portrait, dialogueChoices);
+        }
+        else
+        {
+            DisplayDialoguePanel(text, speaker, portrait, dialogueChoices);
+        }
+        
+
+    }
+
+    private void DisplayShopDialogue(string text, string speaker, string portrait, List<Choice> dialogueChoices)
+    {
+        contentParentShop.SetActive(true);
+        shopSpeakerText.alignment = TextAlignmentOptions.Center;
+
+        shopDialogueText.text = text;
+        shopSpeakerText.text = speaker;
+
+        // Charge le portrait depuis le dossier Resources/Portraits
+        Sprite loadedPortrait = Resources.Load<Sprite>($"Portraits/{portrait}");
+        if (loadedPortrait != null)
+        {
+            shopPortraitImageDialogue.sprite = loadedPortrait;
+        }
+        else
+        {
+            Debug.LogWarning($"Portrait sprite not found for: {portrait}");
+            shopPortraitImageDialogue.sprite = null; // ou un sprite par défaut
+        }
+
+        // Supprime les anciens boutons de choix s'ils existent
+        foreach (var btn in currentShopButtons)
+        {
+            Destroy(btn.gameObject);
+        }
+        currentShopButtons.Clear();
+
+        // Crée dynamiquement les nouveaux boutons dans le conteneur
+        for (int i = 0; i < dialogueChoices.Count; i++)
+        {
+            Choice dialogueChoice = dialogueChoices[i];
+            DialogueChoiceButton newButton = Instantiate(choiceButtonPrefab, choiceButtonContainerShop);
+
+            newButton.setChoiceText(dialogueChoice.text);
+            newButton.setChoiceIndex(i);
+
+            if (i == 0)
+            {
+                newButton.selectButton();
+                GameEventsManager.Instance.DialogueEvent.UpdateChoiceIndex(i);
+            }
+
+            currentShopButtons.Add(newButton);
+        }
+
+    }
+
+    private void DisplayDialoguePanel(string text, string speaker, string portrait, List<Choice> dialogueChoices)
+    {
+        contentParentDialogue.SetActive(true);
         speakerText.alignment = TextAlignmentOptions.Center;
 
         dialogueText.text = text;
@@ -44,15 +131,15 @@ public class DialoguePanelUI : MonoBehaviour
         Sprite loadedPortrait = Resources.Load<Sprite>($"Portraits/{portrait}");
         if (loadedPortrait != null)
         {
-            portraitImage.sprite = loadedPortrait;
+            portraitImageDialogue.sprite = loadedPortrait;
         }
         else
         {
             Debug.LogWarning($"Portrait sprite not found for: {portrait}");
-            portraitImage.sprite = null; // ou un sprite par défaut
+            portraitImageDialogue.sprite = null; // ou un sprite par défaut
         }
 
-        foreach (DialogueChoiceButton button in choiceButtons)
+        foreach (DialogueChoiceButton button in choiceButtonsDialogues)
         {
             button.gameObject.SetActive(false);
         }
@@ -60,7 +147,7 @@ public class DialoguePanelUI : MonoBehaviour
         for (int inkChoiceIndex = 0; inkChoiceIndex < dialogueChoices.Count; inkChoiceIndex++)
         {
             Choice dialogueChoice = dialogueChoices[inkChoiceIndex];
-            DialogueChoiceButton choiceButton = choiceButtons[choiceButtonIndex];
+            DialogueChoiceButton choiceButton = choiceButtonsDialogues[choiceButtonIndex];
 
             choiceButton.gameObject.SetActive(true);
             choiceButton.setChoiceText(dialogueChoice.text);
@@ -74,11 +161,10 @@ public class DialoguePanelUI : MonoBehaviour
 
             choiceButtonIndex--;
         }
-
-
     }
 
-    private void ResetPanel()
+
+        private void ResetPanel()
     {
         dialogueText.text = "";
         speakerText.text = "";

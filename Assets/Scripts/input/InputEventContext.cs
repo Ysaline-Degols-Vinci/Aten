@@ -6,5 +6,6 @@ public enum InputEventContext
 {
     DEFAULT,
     DIALOGUE,
-    INVENTORY
+    INVENTORY,
+    SHOPDIALOGUE,
 }

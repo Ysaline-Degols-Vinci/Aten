@@ -74,7 +74,7 @@ public class PlayerMovements : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE) return;
+        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.SHOPDIALOGUE) return;
 
         // Appliquer le mouvement horizontal
         Vector3 horizontalVelocity = inputDirection * currentSpeed;

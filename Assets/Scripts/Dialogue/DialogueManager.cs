@@ -80,8 +80,9 @@ public class DialogueManager : MonoBehaviour
         EventManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
 
     }
-    private void EnterDialogue(string knotName)
+    private void EnterDialogue(string knotName, bool isShop)
     {
+        //TODO adapt for shops?:D
         if (dialoguePlaying) { 
             return;
         }
@@ -90,7 +91,13 @@ public class DialogueManager : MonoBehaviour
             Inventory.SetActive(false);
             GameEventsManager.Instance.DialogueEvent.DialogueStarted();
             dialoguePlaying = true;
-            GameEventsManager.Instance.InputEventContext = InputEventContext.DIALOGUE;
+            if (!isShop) { 
+                GameEventsManager.Instance.InputEventContext = InputEventContext.DIALOGUE;
+            }
+            else
+            {
+                GameEventsManager.Instance.InputEventContext = InputEventContext.SHOPDIALOGUE;
+            }
         }
         if (!knotName.Equals(""))
         {

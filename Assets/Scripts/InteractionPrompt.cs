@@ -8,6 +8,7 @@ public class InteractionPrompt : MonoBehaviour
     [SerializeField] private PromptAnimator promptAnimator;
     [SerializeField] private string dialogueKnotName;
     Boolean playerIsNear = false;
+    [SerializeField] private bool isShop;
 
     private void Update()
     {
@@ -16,7 +17,7 @@ public class InteractionPrompt : MonoBehaviour
 
             if(!dialogueKnotName.Equals(string.Empty))
             {
-                GameEventsManager.Instance.DialogueEvent.EnterDialogie(dialogueKnotName);
+                GameEventsManager.Instance.DialogueEvent.EnterDialogie(dialogueKnotName, isShop);
             }
            
 

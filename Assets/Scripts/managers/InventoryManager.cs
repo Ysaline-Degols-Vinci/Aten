@@ -56,7 +56,7 @@ public class InventoryManager : MonoBehaviour
               }
           }*/
 
-        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE) return;
+        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.SHOPDIALOGUE) return;
         
 
             if (Input.inputString != null)
