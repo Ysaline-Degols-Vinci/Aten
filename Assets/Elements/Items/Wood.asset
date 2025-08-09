@@ -17,4 +17,6 @@ MonoBehaviour:
   Name: Wood
   Type: 4
   IsStackable: 1
+  basePrice: 2
+  Description: Some wood. Used in a lot of crafts.
   MaxStackSize: 40

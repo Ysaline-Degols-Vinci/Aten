@@ -13,6 +13,7 @@ VAR CollectWoodState = "REQUIREMENTS_NOT_MET"
 EXTERNAL AddItemInventory(string itemName)
 EXTERNAL IsItemQuantityPresent(string itemName)
 EXTERNAL RemoveFromInventory(string itemName, int quantity)
+EXTERNAL EnterShop(string shopName)
 
 
 
@@ -143,9 +144,17 @@ EXTERNAL RemoveFromInventory(string itemName, int quantity)
         And i can buy your stuff too! #speaker:Madleen#portrait:MadleenShop
     -> MadleenDiscussions
     
+    +[Buy]
+        ~ EnterShop("Madleen")
+    ->DONE
+    
     + [Leave]
         Come back soon! I'm always open. #speaker:Madleen#portrait:MadleenShop
     -> DONE
+    
+    === MadleenEndBuy ===
+        Thank you, I hope you found what you were looking for! #speaker:Madleen#portrait:MadleenShop
+    ->MadleenDiscussions
     
   
 

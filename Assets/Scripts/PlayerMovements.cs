@@ -36,7 +36,7 @@ public class PlayerMovements : MonoBehaviour
 
     void Update()
     {
-        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.INVENTORY) {
+        if (GameEventsManager.Instance.InputEventContext == InputEventContext.DIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.INVENTORY || GameEventsManager.Instance.InputEventContext == InputEventContext.SHOPDIALOGUE || GameEventsManager.Instance.InputEventContext == InputEventContext.SHOP) {
             animator.SetBool("isWalking", false);
             inputDirection = Vector3.zero;
             return; }

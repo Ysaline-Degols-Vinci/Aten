@@ -17,4 +17,6 @@ MonoBehaviour:
   Name: Axe
   Type: 0
   IsStackable: 0
+  basePrice: 5
+  Description: A strong axe. Could be used to harvest wood.
   MaxStackSize: 1

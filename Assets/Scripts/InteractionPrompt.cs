@@ -17,7 +17,7 @@ public class InteractionPrompt : MonoBehaviour
 
             if(!dialogueKnotName.Equals(string.Empty))
             {
-                GameEventsManager.Instance.DialogueEvent.EnterDialogie(dialogueKnotName, isShop);
+                GameEventsManager.Instance.DialogueEvent.EnterDialogie(dialogueKnotName, isShop, false);
             }
            
 

@@ -29,7 +29,7 @@ public class InkExternalFunctions
         });
         story.BindExternalFunction("RemoveFromInventory", (string itemName, int quantity) => RemoveFromInventory(itemName, quantity));
 
-
+        story.BindExternalFunction("EnterShop", (string shopName) => EnterShop(shopName));
 
     }
 
@@ -44,6 +44,7 @@ public class InkExternalFunctions
         story.UnbindExternalFunction("AddItemInventory");
         story.UnbindExternalFunction("IsItemQuantityPresent");
         story.UnbindExternalFunction("RemoveFromInventory");
+        story.UnbindExternalFunction("EnterShop");
     }
 
     private void StartQuest(string questId)
@@ -94,5 +95,17 @@ public class InkExternalFunctions
     public void RemoveFromInventory(string itemName, int quantity)
     {
         InventoryManager.Instance.removeItem(itemName, quantity);
+    }
+
+    public void EnterShop(string shopName)
+    {
+        VendorData vendor = ShopDataBase.Instance.GetVendor(shopName);
+
+        if (vendor == null)
+        {
+            Debug.LogWarning($"[EnterShop] Aucun vendeur trouvé avec le nom : {shopName}");
+            return;
+        }
+        ShopManager.instance.OpenShopWithItems(vendor.shopItems, vendor.inkKnotBackToDiscussion, shopName);
     }
 }

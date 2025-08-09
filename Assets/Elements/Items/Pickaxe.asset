@@ -17,4 +17,6 @@ MonoBehaviour:
   Name: Axe
   Type: 0
   IsStackable: 0
+  basePrice: 5
+  Description: A pickaxe. To get little rocks from big rocks.
   MaxStackSize: 1

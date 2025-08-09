@@ -8,4 +8,5 @@ public enum InputEventContext
     DIALOGUE,
     INVENTORY,
     SHOPDIALOGUE,
+    SHOP,
 }

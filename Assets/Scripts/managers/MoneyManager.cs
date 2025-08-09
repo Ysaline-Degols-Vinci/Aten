@@ -42,7 +42,14 @@ public class MoneyManager : MonoBehaviour
         return money;
     }
 
- 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            ChangeMoney(10); //TODO test à enlever
+        }
+    }
+
 
 
 

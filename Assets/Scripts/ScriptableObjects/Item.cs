@@ -11,6 +11,8 @@ public class Item : ScriptableObject
     public string Name;
     public itemType Type;
     public bool IsStackable;
+    public int basePrice;
+    public string Description;
 
     public int MaxStackSize;
 }

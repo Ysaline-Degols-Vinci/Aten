@@ -80,15 +80,15 @@ public class DialogueManager : MonoBehaviour
         EventManager.instance.questEvents.onQuestStateChange -= QuestStateChange;
 
     }
-    private void EnterDialogue(string knotName, bool isShop)
+    private void EnterDialogue(string knotName, bool isShop, bool continueDirectly)
     {
-        //TODO adapt for shops?:D
-        if (dialoguePlaying) { 
+        if (dialoguePlaying || GameEventsManager.Instance.InputEventContext == InputEventContext.SHOP || GameEventsManager.Instance.InputEventContext == InputEventContext.INVENTORY) {
             return;
         }
         else
         {
             Inventory.SetActive(false);
+            InventoryManager.Instance.hideExternInventory();
             GameEventsManager.Instance.DialogueEvent.DialogueStarted();
             dialoguePlaying = true;
             if (!isShop) { 
@@ -101,12 +101,14 @@ public class DialogueManager : MonoBehaviour
         }
         if (!knotName.Equals(""))
         {
-
             story.ChoosePathString(knotName);
         }
         inkDialogueVariables.SyncVariablesAndStartListening(story);
 
-        // continueOrExitStory();
+        if (continueDirectly)
+        {
+            continueOrExitStory();
+        }
     }
 
     private void continueOrExitStory()
@@ -172,7 +174,11 @@ public class DialogueManager : MonoBehaviour
     {
         dialoguePlaying = false;
         Inventory.SetActive(true);
-        GameEventsManager.Instance.InputEventContext = InputEventContext.DEFAULT;
+        if (GameEventsManager.Instance.InputEventContext != InputEventContext.SHOP)
+        {
+           GameEventsManager.Instance.InputEventContext = InputEventContext.DEFAULT;
+            InventoryManager.Instance.displayExternInventory();
+        }
         GameEventsManager.Instance.DialogueEvent.DialogueFinished();
         story.ResetState();
     }

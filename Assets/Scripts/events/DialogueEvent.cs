@@ -5,11 +5,11 @@ using System;
 using Ink.Runtime;
 public class DialogueEvent
 {
-    public event Action<String, bool> onEnterDialogue;
+    public event Action<String, bool, bool> onEnterDialogue;
 
-    public void EnterDialogie(String KnotName, bool isShop)
+    public void EnterDialogie(String KnotName, bool isShop, bool continueDirectly)
     {
-       onEnterDialogue?.Invoke(KnotName, isShop);
+       onEnterDialogue?.Invoke(KnotName, isShop, continueDirectly);
     }
 
     public event Action onDialogueStarted;
